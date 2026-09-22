@@ -1,0 +1,6 @@
+2026/09/22-09:28:23.217 38f8 Reusing MANIFEST C:\for work\seedloaf-bot\seedloaf-profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/09/22-09:28:23.218 38f8 Recovering log #4
+2026/09/22-09:28:23.220 38f8 Reusing old log C:\for work\seedloaf-bot\seedloaf-profile\Default\Local Storage\leveldb/000004.log 
+2026/09/22-09:28:35.296 32c0 Level-0 table #8: started
+2026/09/22-09:28:35.304 32c0 Level-0 table #8: 25368 bytes OK
+2026/09/22-09:28:35.308 32c0 Delete type=0 #4
