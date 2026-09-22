@@ -1,4 +1,4 @@
-```js
+
 const { chromium } = require("playwright");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -205,4 +205,3 @@ function wait(ms) {
     process.exit(1);
   }
 })();
-```
