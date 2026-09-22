@@ -1,3 +1,4 @@
+```js
 const { chromium } = require("playwright");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -39,20 +40,32 @@ function wait(ms) {
 }
 
 (async () => {
+  console.log("================================");
   console.log("Starting Seedloaf bot...");
+  console.log("================================");
 
-  const browser = await chromium.launch({
-    headless: false,
-  });
-
-  const context = await browser.newContext({
-    storageState: "auth.json",
-  });
-
-  const page = await context.newPage();
+  let browser;
 
   try {
-    // Open Seedloaf
+    console.log("Starting Chromium...");
+
+    browser = await chromium.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--no-zygote",
+      ],
+    });
+
+    const context = await browser.newContext({
+      storageState: "auth.json",
+    });
+
+    const page = await context.newPage();
+
     console.log("Opening Seedloaf...");
 
     await page.goto("https://seedloaf.com/", {
@@ -62,18 +75,20 @@ function wait(ms) {
 
     await page.waitForTimeout(3000);
 
-    // Login if needed
+    console.log("Current URL:", page.url());
+
     const login = page.getByText("Login", {
       exact: true,
     });
 
-    if (await login.isVisible()) {
+    if (await login.isVisible().catch(() => false)) {
       console.log("Login button found. Clicking...");
+
       await login.click();
+
       await page.waitForTimeout(5000);
     }
 
-    // Dashboard
     console.log("Opening dashboard...");
 
     await page.goto("https://seedloaf.com/dashboard", {
@@ -86,7 +101,6 @@ function wait(ms) {
     console.log("Dashboard loaded.");
     console.log("Current URL:", page.url());
 
-    // Monitor forever
     while (true) {
       try {
         console.log("\n================================");
@@ -100,7 +114,6 @@ function wait(ms) {
           enabled ? "ON" : "OFF"
         );
 
-        // If website says OFF
         if (!enabled) {
           console.log(
             "Bot is OFF from Admin Dashboard."
@@ -119,7 +132,6 @@ function wait(ms) {
           continue;
         }
 
-        // Bot is ON
         console.log(
           "Bot is ON. Refreshing Seedloaf dashboard..."
         );
@@ -138,7 +150,9 @@ function wait(ms) {
           name: "Start World",
         });
 
-        if (await startButton.isVisible()) {
+        if (
+          await startButton.isVisible().catch(() => false)
+        ) {
           console.log("World is OFF.");
           console.log("Starting world...");
 
@@ -177,10 +191,18 @@ function wait(ms) {
         await wait(60000);
       }
     }
+
   } catch (error) {
     console.error(
       "Fatal error:",
       error.message
     );
+
+    if (browser) {
+      await browser.close().catch(() => {});
+    }
+
+    process.exit(1);
   }
 })();
+```
